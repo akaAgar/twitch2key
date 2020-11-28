@@ -2,7 +2,7 @@
 ==========================================================================
 This file is part of Twitch2Key, a tool which can turn messages from
 a Twitch chat into simulated keyboard presses,
-by @akaAgar (https://github.com/akaAgar/twitch-chat-exporter)
+by @akaAgar (https://github.com/akaAgar/twitch2key)
 
 Twitch2Key is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public License
