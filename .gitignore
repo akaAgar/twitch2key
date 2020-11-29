@@ -3,4 +3,5 @@
 [Ss]rc/[Oo]bj/
 
 *.*.config
+*.exe
 *.pdb
