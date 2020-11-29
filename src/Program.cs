@@ -23,6 +23,7 @@ using INIPlusPlus;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TwitchChatExporter
@@ -62,11 +63,17 @@ namespace TwitchChatExporter
         private static TwitchChatListener Listener;
 
         /// <summary>
+        /// Array of the names of users with admin privileges.
+        /// </summary>
+        private static string[] UserAdmins;
+
+        /// <summary>
         /// Main application entry point.
         /// </summary>
         private static void Main()
         {
             string twitchChannel, twitchIRCToken;
+
             KeyboardCommands = new Dictionary<string, KeyboardCommand>(StringComparer.InvariantCultureIgnoreCase);
             InputSender = new KeyboardInputSender();
 
@@ -74,6 +81,8 @@ namespace TwitchChatExporter
             {
                 twitchChannel = ini.GetValue<string>("Global", "Channel").Trim();
                 twitchIRCToken = ini.GetValue<string>("Global", "Token").Trim();
+                UserAdmins = (from string u in ini.GetValueArray<string>("Global", "UserAdmins")
+                              where !string.IsNullOrEmpty(u.Trim()) select u.Trim()).Distinct().ToArray();
 
                 if (ini.GetValue<bool>("Global", "LogToFile"))
                     LogWriter = File.AppendText($"{twitchChannel}.txt");
@@ -127,10 +136,15 @@ namespace TwitchChatExporter
             // send the appropriate key command.
             if (KeyboardCommands.ContainsKey(message))
             {
-                if (KeyboardCommands[message].CancelledKey != Keys.None)
-                    InputSender.ReleaseKey(KeyboardCommands[message].CancelledKey);
+                KeyboardCommand command = KeyboardCommands[message];
 
-                InputSender.PressKey(KeyboardCommands[message].Key, KeyboardCommands[message].Duration, KeyboardCommands[message].Increment);
+                // Command is an admin command and user is not an admin, do nothing
+                if (command.AdminOnly && !UserAdmins.Contains(user)) return;
+
+                if (command.CancelledKey != Keys.None)
+                    InputSender.ReleaseKey(command.CancelledKey);
+
+                InputSender.PressKey(command.Key, command.Duration, command.Increment);
             }
         }
     }

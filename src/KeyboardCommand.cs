@@ -31,6 +31,11 @@ namespace TwitchChatExporter
     public struct KeyboardCommand
     {
         /// <summary>
+        /// Is this command only available to "admin" users?
+        /// </summary>
+        public bool AdminOnly { get; }
+
+        /// <summary>
         /// Keypress to cancel when this key is pressed
         /// (to make sure "move forward" and "move backward" key are not pressed at the same time, etc.)
         /// </summary>
@@ -59,6 +64,7 @@ namespace TwitchChatExporter
         /// <param name="iniKey">.ini key from which to read the command</param>
         public KeyboardCommand(INIFile ini, string iniKey)
         {
+            AdminOnly = ini.GetValue("Keyboard", $"{iniKey}.AdminOnly", false);
             CancelledKey = ini.GetValue("Keyboard", $"{iniKey}.CancelledKey", Keys.None);
             Duration = Math.Max(1, ini.GetValue("Keyboard", $"{iniKey}.Duration", 100));
             Key = ini.GetValue("Keyboard", $"{iniKey}.Key", Keys.None);
