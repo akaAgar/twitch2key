@@ -2,7 +2,7 @@
 
 **This is the project's source code repository. If you're not interested in the source code, binaries can be found at https://akaagar.itch.io/twitch2key**
 
-A C# command-line tool which listens to a Twitch channel's live chat and simulates keyboard presses when certain messages are posted. Can be used to create "Twitch plays XXX" streams where commands from the chat ("forward", "back", etc.) are turned into game inputs.
+A C# command-line tool which listens to a Twitch channel's live chat and simulates keyboard presses when certain messages are posted. Can be used to create "Twitch plays X" streams where commands from the chat ("forward", "back", etc.) are turned into game inputs.
 
 **Features**
 
