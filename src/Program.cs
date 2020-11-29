@@ -34,15 +34,6 @@ namespace TwitchChatExporter
     public sealed class Program
     {
         /// <summary>
-        /// Path to the settings .ini file
-        /// </summary>
-#if DEBUG
-        private const string SETTINGS_INI_FILE = "../Release/Twitch2Key.ini";
-#else
-        private const string SETTINGS_INI_FILE = "Twitch2Key.ini";
-#endif
-
-        /// <summary>
         /// Dictionary of keyboard commands with the chat message that triggers them as a key.
         /// </summary>
         private static Dictionary<string, KeyboardCommand> KeyboardCommands;
@@ -70,14 +61,33 @@ namespace TwitchChatExporter
         /// <summary>
         /// Main application entry point.
         /// </summary>
-        private static void Main()
+        private static void Main(params string[] args)
         {
+            if (args.Length == 0)
+            {
+#if DEBUG
+                args = new string[] { "..\\Release\\DemoSettings.ini" };
+#else
+                Console.WriteLine("No settings .ini file provided. Syntax is: Twitch2Key.exe PATH_TO_INI_FILE_WITH_SETTINGS");
+                return;
+#endif
+            }
+
+            if (!File.Exists(args[0]))
+            {
+                Console.WriteLine($"File {args[0]} not found.");
+#if DEBUG
+                Console.ReadLine(); // So the console window doesn't close immediately when debugging
+#endif
+                return;
+            }
+
             string twitchChannel, twitchIRCToken;
 
             KeyboardCommands = new Dictionary<string, KeyboardCommand>(StringComparer.InvariantCultureIgnoreCase);
             InputSender = new KeyboardInputSender();
 
-            using (INIFile ini = new INIFile(SETTINGS_INI_FILE))
+            using (INIFile ini = new INIFile(args[0]))
             {
                 twitchChannel = ini.GetValue<string>("Global", "Channel").Trim();
                 twitchIRCToken = ini.GetValue<string>("Global", "Token").Trim();
@@ -89,7 +99,10 @@ namespace TwitchChatExporter
 
                 if (string.IsNullOrEmpty(twitchChannel) || string.IsNullOrEmpty(twitchIRCToken))
                 {
-                    Console.WriteLine("Twitch channel and twitch IRC token not set in Twitch2Key.ini. Aborting.");
+                    Console.WriteLine($"Twitch channel and twitch IRC token not set in file {args[0]}. Aborting.");
+#if DEBUG
+                    Console.ReadLine(); // So the console window doesn't close immediately when debugging
+#endif
                     return;
                 }
 
