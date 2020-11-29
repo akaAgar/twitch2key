@@ -19,42 +19,36 @@ along with Twitch2Key. If not, see https://www.gnu.org/licenses/
 ==========================================================================
 */
 
-using System;
-
 namespace Twitch2Key
 {
     /// <summary>
-    /// Main application class.
+    /// Enumerates special functions for keyboard commands.
     /// </summary>
-
-    public static class Program
+    public enum KeyboardCommandSpecial
     {
         /// <summary>
-        /// Main application entry point.
+        /// This command does nothing special
         /// </summary>
-        /// <param name="args">Command-line parameters</param>
-        private static void Main(string[] args)
-        {
-            if (args.Length == 0) // No command-line parameters
-            {
-#if DEBUG
-                // No parameters while debugging? Load a default .ini file.
-                args = new string[] { "..\\Release\\AllLetters.ini" };
-#else
-                Console.WriteLine("No settings .ini file provided. Syntax is: Twitch2Key.exe PATH_TO_INI_FILE_WITH_SETTINGS");
-                return;
-#endif
-            }
-
-            using (T2K t2kApp = new T2K())
-                t2kApp.Run(args[0]);
-
-#if DEBUG
-            // Make sure console window doesn't close immediately when debugging
-            Console.WriteLine();
-            Console.WriteLine("Press ENTER to close this window");
-            Console.ReadLine();
-#endif
-        }
+        None,
+        /// <summary>
+        /// Toggles the admin (only admins can use commands) mode OFF
+        /// </summary>
+        AdminModeOff,
+        /// <summary>
+        /// Toggles the admin (only admins can use commands) mode ON
+        /// </summary>
+        AdminModeOn,
+        /// <summary>
+        /// This command sets the team user who called it belongs to, if he/she doesn't belong to any team yet
+        /// </summary>
+        SetTeam,
+        /// <summary>
+        /// This command sets the team user who called it belongs to, event if he/she already belongs to a team (old value is overwritten)
+        /// </summary>
+        SetTeamOverwrite,
+        /// <summary>
+        /// This command resets all teams (remove all players from all teams)
+        /// </summary>
+        ResetAllTeams
     }
 }

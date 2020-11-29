@@ -24,7 +24,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace TwitchChatExporter
+namespace Twitch2Key
 {
     /// <summary>
     /// Listens to a Twitch channel chat and raises events when a message is posted.

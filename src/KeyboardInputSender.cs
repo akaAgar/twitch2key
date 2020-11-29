@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace TwitchChatExporter
+namespace Twitch2Key
 {
     using STimer = System.Timers.Timer;
 

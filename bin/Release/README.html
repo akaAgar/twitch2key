@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Twitch2Key use manual</title>
+    <style>.content { max-width: 1024px; margin-left: auto; margin-right: auto; margin-bottom: 32px; }</style>
+  </head>
+  <body>
+    <div class='content'>
+      <h1>Twitch2Key</h1>
+      <p>A tool which listens to a Twitch channel's live chat and simulates keyboard presses when certain messages are posted. Can be used to create "Twitch plays XXX" streams where commands from the chat ("forward", "back", etc.) are turned into game inputs.</p>
+      <ul>
+        <li>Created by Ambroise Garel (<a href='http://cafedefaune.net/'>@akaAgar</a>)</li>
+        <li>Program page: <a href='https://akaagar.itch.io/twitch2key'>https://akaagar.itch.io/twitch2key</a></li>
+        <li>Source code repository: <a href='https://github.com/akaAgar/twitch2key'>https://github.com/akaAgar/twitch2key</a></li>
+      </ul>
+      <h2>How to use the program (quickstart instructions)</h2>
+      <ul>
+        <li>Choose one of the provided settings .ini file or create your own (see below)</li>
+        <li>Add the name of the Twitch channel with the chat you wish to listen to (without any leading @ or #) after "Channel=" in the [Global] section</li>
+        <li>Login to your Twitch account and go to <a href='https://twitchapps.com/tmi/'>https://twitchapps.com/tmi/</a> to get a Twitch IRC password. Copy this password (including the "OAuth:" part) and paste it after "Token=" in the [Global] section of the .ini file you intend to use</li>
+        <li>Drop this .ini file on Twitch2Key.exe in the Windows file explorer</li>
+        <li>The program now listens to the chat and turns specified command into simulated key inputs</li>
+        <li>Press CTRL+C to close the window and terminate the program</li>
+      </ul>
+      <h2>Creating your own .ini setting files</h2>
+	  <p>Don't hesitate to check out the provided .ini files to get a better sense of how they work.</p>
+      <p><strong>/!\ Be especially careful about which keypresses you allow your users to generate. I strongly advise against allowing modifier keys (Ctrl/Alt/Win) or function keys (F1...F12) as these could pause a security risk. WHEN IN DOUBT, ALWAYS REMEMBER THAT YOU'RE TECHNICALLY GIVING ACCESS TO YOUR COMPUTER TO A BUNCH OF TWITCH USERS. LET THAT SINK IN. /!\</strong></p>
+      <h3>The [Global] section stores general parameters about the stream</h3>
+      <ul>
+        <li><strong>Channel=SomeChannelName</strong><br />Name of the Twitch channel to listen to, without any leading @ or #</li>
+        <li><strong>Token=OAuth:abcdefghijklmnopqrstuvwxyz</strong><br />Token/password used to connect to Twitch, generate yours at https://twitchapps.com/tmi/</li>
+        <li><strong>LogToFile=false</strong><br />If true, all chat messages will be appended at the end of a file named [ChannelName].txt</li>
+        <li><strong>UserAdmins=AnAdmin,AnotherAdmin</strong><br />Comma-separated, case SENSITIVE list of users with "admin" privileges, able to use commands with the "AdminsOnly" setting set to true.</li>
+      </ul>
+      <h3>The [Keyboard] section stores specific information about each command</h3>
+      <p>The "name" of each command (the word before the dot) has no importance as long as each one is different.<br/>
+        You can add as many commands as you wish, there's no hard limit.<br/>Keys use the standard Windows names, you can find a list here: <a href='https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=net-5.0'>https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=net-5.0</a>
+      </p>
+      <ul>
+        <li><strong>XXX.AdminsOnly=false</strong><br />
+          If true, only users with admin privileges (defined in the UserAdmins settings of the [Global] section) can use this command. Useful to create super-users who can load/save/pause the game, etc.
+        <li><strong>XXX.Cancel=None</strong><br />
+          If the value is not set to "None", the key to *release* when the message is typed into the chat. Used to make sure "move forward" and "move backward" key are not pressed at the same time, etc.
+        <li><strong>XXX.Duration=250</strong><br />
+          For how long (in milliseconds) should the key stay pressed.
+        <li><strong>XXX.Increment=false</strong><br />
+          If true, each additional messages will increase the duration the key will stay pressed.
+          If false, duration will be reset each time to the valued specified in duration.
+        <li><strong>XXX.Key=A</strong><br />
+          Key to press.
+        <li><strong>XXX.Message=I want to press the A key</strong><br />
+          Message to look for in the chat (case INSENSITIVE)
+        <li>
+          <strong>XXX.Special=None</strong><br />Special function for this command. If the value is None, this is a normal keypress command. If it is any other value, the keypress is ignored and the following effect takes place
+          <ul>
+            <li><strong>AdminModeOff</strong>: Toggles the admin-mode (only admins can use commands for the moment) OFF. Unless you want to try something special, this command should probably be restricted to admins.</li>
+            <li><strong>AdminModeOn</strong>: Toggles the admin-mode (only admins can use commands for the moment) ON. Unless you want to try something special, this command should probably be restricted to admins.</li>
+            <li><strong>SetTeam</strong>: Assign the user who called this command to the team specified in XXX.Team, ONLY if he/she doesn't belong to any team yet.</li>
+            <li><strong>SetTeamOverwrite</strong>: Assign the user who called this command to the team specified in XXX.Team, EVEN if he/she doesn't belong to any team yet (previous value is overwritten).</li>
+            <li><strong>ResetAllTeams</strong>: Resets all teams (remove all players from all teams). Unless you want to try something special, this command should probably be restricted to admins.
+          </ul>
+        </li>
+        <li><strong>XXX.Team=0</strong><br />If the value is not zero, only user who belong to this team will be able to use this command. Acceptable values are 0 (no team) or 1-8 (team 1 to 8)</li>
+      </ul>
+    </div>
+  </body>
+</html>

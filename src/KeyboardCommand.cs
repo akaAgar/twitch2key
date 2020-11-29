@@ -23,7 +23,7 @@ using INIPlusPlus;
 using System;
 using System.Windows.Forms;
 
-namespace TwitchChatExporter
+namespace Twitch2Key
 {
     /// <summary>
     /// Stores information about a key command to execute when a certain message is typed in the chat.
@@ -31,31 +31,47 @@ namespace TwitchChatExporter
     public struct KeyboardCommand
     {
         /// <summary>
+        /// Maximum number of teams users can belong to.
+        /// </summary>
+        public const int MAX_TEAMS = 8;
+
+        /// <summary>
         /// Is this command only available to "admin" users?
         /// </summary>
-        public bool AdminOnly { get; }
+        public bool AdminsOnly { get; }
 
         /// <summary>
         /// Keypress to cancel when this key is pressed
         /// (to make sure "move forward" and "move backward" key are not pressed at the same time, etc.)
         /// </summary>
         public Keys CancelledKey { get; }
-        
+
         /// <summary>
         /// How long (in milliseconds) should the key be pressed?
         /// </summary>
         public double Duration { get; }
-        
+
         /// <summary>
         /// The key code to press.
         /// </summary>
         public Keys Key { get; }
-        
+
         /// <summary>
         /// If true, key press <see cref="Duration"/> will be added to the total duration of the key press.
         /// If false, duration will be set to the valued specified in <see cref="Duration"/>.
         /// </summary>
         public bool Increment { get; }
+
+        /// <summary>
+        /// Special options for this command.
+        /// </summary>
+        public KeyboardCommandSpecial Special { get; }
+
+        /// <summary>
+        /// Team users must belong to be able to use this command. 0 means "all teams allowed".
+        /// If <see cref="Special"/> is equal to <see cref="KeyboardCommandSpecial.SetTeam"/>, defines the team player will be assigned to.
+        /// </summary>
+        public int Team { get; }
 
         /// <summary>
         /// Constructor.
@@ -64,11 +80,13 @@ namespace TwitchChatExporter
         /// <param name="iniKey">.ini key from which to read the command</param>
         public KeyboardCommand(INIFile ini, string iniKey)
         {
-            AdminOnly = ini.GetValue("Keyboard", $"{iniKey}.AdminOnly", false);
+            AdminsOnly = ini.GetValue("Keyboard", $"{iniKey}.AdminsOnly", false);
             CancelledKey = ini.GetValue("Keyboard", $"{iniKey}.CancelledKey", Keys.None);
             Duration = Math.Max(1, ini.GetValue("Keyboard", $"{iniKey}.Duration", 100));
             Key = ini.GetValue("Keyboard", $"{iniKey}.Key", Keys.None);
             Increment = ini.GetValue("Keyboard", $"{iniKey}.Increment", false);
+            Special = ini.GetValue("Keyboard", $"{iniKey}.Special", KeyboardCommandSpecial.None);
+            Team = Math.Min(MAX_TEAMS, Math.Max(0, ini.GetValue("Keyboard", $"{iniKey}.Team", 0)));
         }
     }
 }
