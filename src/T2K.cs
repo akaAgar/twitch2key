@@ -156,19 +156,28 @@ namespace Twitch2Key
                 {
                     case KeyboardCommandSpecial.AdminModeOff:
                         AdminModeEnabled = false;
+                        Console.WriteLine("Admin mode turned OFF.");
                         return;
                     case KeyboardCommandSpecial.AdminModeOn:
                         AdminModeEnabled = true;
+                        Console.WriteLine("Admin mode turned ON.");
                         return;
                     case KeyboardCommandSpecial.ResetAllTeams:
                         Teams.Clear();
+                        Console.WriteLine("All teams cleared.");
                         return;
                     case KeyboardCommandSpecial.SetTeam:
                     case KeyboardCommandSpecial.SetTeamOverwrite:
                         if ((command.Special != KeyboardCommandSpecial.SetTeamOverwrite) && Teams.ContainsKey(user))
                             return; // User already belongs to a team
                         if (Teams.ContainsKey(user)) Teams.Remove(user); // Remove the current value
-                        if (command.Team > 0) Teams.Add(user, command.Team); // Set the new team (if team is not zero)
+                        if (command.Team > 0) // Set the new team (if team is not zero)
+                        {
+                            Teams.Add(user, command.Team);
+                            Console.WriteLine($"User {user} joined team {command.Team}.");
+                        }
+                        else
+                            Console.WriteLine($"User {user} removed from all teams.");
                         return;
                 }
 
