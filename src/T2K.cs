@@ -92,7 +92,8 @@ namespace Twitch2Key
                 twitchChannel = ini.GetValue<string>("Global", "Channel").Trim();
                 twitchIRCToken = ini.GetValue<string>("Global", "Token").Trim();
                 UserAdmins = (from string u in ini.GetValueArray<string>("Global", "UserAdmins")
-                              where !string.IsNullOrEmpty(u.Trim()) select u.Trim()).Distinct().ToArray();
+                              where !string.IsNullOrEmpty(u.Trim()) select u.Trim().ToLowerInvariant()).Distinct().ToArray();
+                Console.WriteLine($"The following users are admins: {string.Join(", ", UserAdmins)}");
 
                 if (ini.GetValue<bool>("Global", "LogToFile"))
                     LogWriter = File.AppendText($"{twitchChannel}.txt");
@@ -149,7 +150,11 @@ namespace Twitch2Key
                 KeyboardCommand command = KeyboardCommands[message];
 
                 // Command is an admin command, or we are currently in admin-only mode, and user is not an admin: do nothing
-                if ((command.AdminsOnly || AdminModeEnabled) && !UserAdmins.Contains(user)) return;
+                if ((command.AdminsOnly || AdminModeEnabled) && !UserAdmins.Contains(user.ToLowerInvariant()))
+                {
+                    Console.WriteLine($"User {user} tried to call admin-only commmand {message}");
+                    return;
+                }
 
                 // Check for special command functions
                 switch (command.Special)

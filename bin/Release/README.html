@@ -31,7 +31,7 @@
         <li><strong>Channel=SomeChannelName</strong><br />Name of the Twitch channel to listen to, without any leading @ or #</li>
         <li><strong>Token=OAuth:abcdefghijklmnopqrstuvwxyz</strong><br />Token/password used to connect to Twitch, generate yours at https://twitchapps.com/tmi/</li>
         <li><strong>LogToFile=false</strong><br />If true, all chat messages will be appended at the end of a file named [ChannelName].txt</li>
-        <li><strong>UserAdmins=AnAdmin,AnotherAdmin</strong><br />Comma-separated, case SENSITIVE list of users with "admin" privileges, able to use commands with the "AdminsOnly" setting set to true.</li>
+        <li><strong>UserAdmins=AnAdmin,AnotherAdmin</strong><br />Comma-separated, case INSENSITIVE list of users with "admin" privileges, able to use commands with the "AdminsOnly" setting set to true.</li>
       </ul>
       <h3>The [Keyboard] section stores specific information about each command</h3>
       <p>The "name" of each command (the word before the dot) has no importance as long as each one is different.<br/>
